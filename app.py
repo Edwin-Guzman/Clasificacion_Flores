@@ -14,18 +14,18 @@ st.markdown("### **Asignatura:** IS-701 - Inteligencia Artificial (Campus Comaya
 st.markdown("### **Estudiante:** Edwin Eduardo Guzmán Ramos")
 st.markdown("### **Número de Cuenta:** 20211930058")
 st.write("Suba una imagen para clasificarla mediante el modelo MobileNetV2 adaptado.")
-st.write("---") # Línea divisoria visual
+st.write("---") 
 
 IMG_SIZE = (224, 224)
 
-# --- CONFIGURACIÓN DE RUTAS DEL MODELO EN GITHUB ---
-# Apuntamos a la carpeta exacta "models" que descargaste de Colab
-MODEL_DIR = Path("models")
+# --- CORRECCIÓN DE RUTA DE ACUERDO A TU GITHUB ---
+# Apuntamos exactamente a la carpeta que subiste: 'Clasificacion_Flores'
+MODEL_DIR = Path("Clasificacion_Flores")
 
-# Archivo de clases (nos aseguramos de que busque 'class_names.json')
+# Archivo de clases dentro de tu carpeta
 CLASS_PATH = MODEL_DIR / "class_names.json"
 
-# Lista de formatos guardados para intentar cargar de forma dinámica (.keras y .h5)
+# Modelos dentro de tu carpeta
 MODEL_PATHS = [MODEL_DIR / "flores_net.keras", MODEL_DIR / "flores_net.h5"]
 # ---------------------------------------------------
 
@@ -36,7 +36,6 @@ LABELS_ES = {
     "rose": "Rosa",
     "sunflower": "Girasol",
     "tulip": "Tulipán",
-    # Variantes con inicial mayúscula por si el generador las guardó así
     "Daisy": "Margarita",
     "Dandelion": "Diente de León",
     "Rose": "Rosa",
@@ -63,20 +62,16 @@ def cargar_clases():
                 return json.load(f)
         except Exception:
             pass
-    # Respaldo seguro si el archivo JSON no se lee correctamente
     return ["daisy", "dandelion", "rose", "sunflower", "tulip"]
 
 def preparar_imagen(img):
     img = img.convert("RGB").resize(IMG_SIZE)
     arr = np.array(img, dtype=np.float32)
-    # Escalado idéntico al 1./255 del ImageDataGenerator de tu Colab
     arr = arr / 255.0
     return np.expand_dims(arr, axis=0)
 
 def predecir(img):
     preds = modelo.predict(preparar_imagen(img), verbose=0)[0]
-    
-    # Obtener los índices de las probabilidades más altas (máximo las 3 mejores)
     num_clases_mostrar = min(3, len(clases))
     top_indices = np.argsort(preds)[-num_clases_mostrar:][::-1]
     
