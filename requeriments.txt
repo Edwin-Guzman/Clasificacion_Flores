@@ -1,0 +1,7 @@
+Plaintext
+tensorflow
+matplotlib
+numpy
+streamlit
+opencv-python-headless
+seaborn
